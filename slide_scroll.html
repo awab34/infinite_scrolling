@@ -93,33 +93,33 @@ body {
     </div>
     
     
-    <div class="card" data-aos="fade-up" style="display: none !important;">
+    <div class="card "  data-aos="fade-up" style="visibility: hidden !important;">
       2
     </div>
-    <div class="card" data-aos="fade-up" style="display: none !important;">
+    <div class="card " data-aos="fade-up" style="visibility: hidden !important;">
       3
     </div>
     
-    <div class="card" data-aos="fade-up" style="display: none !important;">
+    <div class="card " data-aos="fade-up" style="visibility: hidden !important;">
       4
     </div>
-    <div class="card" data-aos="fade-up" style="display: none !important;">
+    <div class="card " data-aos="fade-up" style="visibility: hidden !important;">
       5
     </div>
-    <div class="card" data-aos="fade-up" style="display: none !important;">
+    <div class="card " data-aos="fade-up" style="visibility: hidden !important;">
       6
     </div>
-    <div class="card" data-aos="fade-up" style="display: none !important;">
+    <div class="card " data-aos="fade-up" style="visibility: hidden !important;">
       7
     </div>
-    <div class="card" data-aos="fade-up" style="display: none !important;">
+    <div class="card " data-aos="fade-up" style="visibility: hidden !important;">
       8
     </div>
     <div id="towCards" style="display: flex; justify-content: center;">
-      <div class="half-card"  data-aos="fade-up" data-aos-duration="3000"  style="display: none !important;">
+      <div class="half-card "  data-aos="fade-up"   style="visibility: hidden !important;">
         9
       </div>
-      <div class="half-card"  data-aos="fade-up" style="display: none !important;">
+      <div class="half-card "  data-aos="fade-up" style="visibility: hidden !important;">
         10
       </div>
     </div>
@@ -144,7 +144,7 @@ let index = 1;
 const fullShowArray = {cardsContainers,halhCards};
 const cardLimit = 9;
 const cardIncrease = 1;
-const pageCount = Math.ceil(cardLimit / cardIncrease);
+const pageCount = Math.ceil(cardLimit );
 let currentPage = 1;
 
 cardTotalElem.innerHTML = cardLimit;
@@ -172,23 +172,29 @@ const createCard = (index) => {
   let endOfPage = false;
   
   if(index >= 8){
-    const rect = fullShowArray["halhCards"][index-8].getBoundingClientRect();
-    endOfPage = rect.top <= 0; 
+    if(index == 8){
+      const rect = fullShowArray["cardsContainers"][index-1].getBoundingClientRect();
+      endOfPage = rect.top <= 0; 
+    }else{
+      
+      const rect = fullShowArray["halhCards"][index-8].getBoundingClientRect();
+      endOfPage = rect.top <= 0; 
+    }
   }else{
-    const rect = fullShowArray["cardsContainers"][index].getBoundingClientRect();
+
+    const rect = fullShowArray["cardsContainers"][index -1].getBoundingClientRect();
     endOfPage = rect.top <= 0 ;
-        
   }
   if(endOfPage){
     if(index < 8){
-      fullShowArray["cardsContainers"][index].removeAttribute("style","display: none !important;");
+      fullShowArray["cardsContainers"][index].removeAttribute("style","visibility: hidden !important;");
     }else{
 
-      fullShowArray["halhCards"][index-8].removeAttribute("style","display: none !important;");
+      fullShowArray["halhCards"][index-8].removeAttribute("style","visibility: hidden !important;");
     }
-
+    currentPage = index;
     }else{
-      
+      console.log(index);
     }
     
   
@@ -199,58 +205,52 @@ const deleteCard = (index) => {
   let endOfPage = false;
   
   if(index >= 8){
-    const rect = fullShowArray["halhCards"][index-8].getBoundingClientRect();
+   
+    const rect = fullShowArray["cardsContainers"][index-2].getBoundingClientRect();
     endOfPage = rect.top >= 0; 
-        console.log();
+    
+    
   }else{
-    const rect = fullShowArray["cardsContainers"][index].getBoundingClientRect();
-    endOfPage = rect.top >= 0 ;
-        
+    if(index > 1){
+      const rect = fullShowArray["cardsContainers"][index -2].getBoundingClientRect();
+      endOfPage = rect.top >= 0 ;
+    }else{
+      const rect = fullShowArray["cardsContainers"][index -1].getBoundingClientRect();
+      endOfPage = rect.top >= 0 ;
+    }
+    
   }
   if(endOfPage && index >= 0){
 
     if(index >= 8){
-      console.log();
-      fullShowArray["halhCards"][index-8].setAttribute("style","display: none !important;");
+      
+      fullShowArray["halhCards"][index-8].setAttribute("style","visibility: hidden !important;");
     }else{
-      fullShowArray["cardsContainers"][index].setAttribute("style","display: none !important;");
+      fullShowArray["cardsContainers"][index].setAttribute("style","visibility: hidden !important;");
 
     }
     currentPage = currentPage -1;
   }else{
-    console.log("out of the div");
   }
-  
-  
-
-
 };
 var lastScrollTop = 0;
 const addCards = (pageIndex) => {
-  currentPage = pageIndex;
-  console.log(currentPage);
-  const startRange = (pageIndex - 1) * cardIncrease;
-  const endRange =
-    currentPage == pageCount ? cardLimit : pageIndex * cardIncrease;
+  
+  
 
-  cardCountElem.innerHTML = endRange;
-  var st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
-   
-    for (let i = startRange + 1; i <= endRange; i++) {
-      createCard(i);
-    }
+  cardCountElem.innerHTML = 9;
+
+  createCard(pageIndex);
+    
    
   
 };
 const removeCards = (pageIndex) => {
   currentPage = pageIndex;
-  console.log(currentPage);
-  const startRange = (pageIndex - 1) * cardIncrease;
   const endRange =
-    currentPage == pageCount ? cardLimit : pageIndex * cardIncrease;
+    currentPage == pageCount ? cardLimit : pageIndex ;
 
   cardCountElem.innerHTML = endRange;
-  var st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
    
   
       deleteCard(pageIndex);
@@ -263,18 +263,16 @@ const handleInfiniteScroll = () => {
   throttle(() => {
     const element = document.getElementById("card-container");
   const rect = element.getBoundingClientRect();
-    const endOfPage = rect.top >= 0 &&
-        rect.left >= 0 ||
-        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-        rect.right <= (window.innerWidth || document.documentElement.clientWidth);
+  
+    const endOfPage = rect.top <= 0 && rect.bottom >= 0;
         
         var st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
    if (st > lastScrollTop){
+    
     if (endOfPage) {
       if(cardLimit <= currentPage){
-        console.log("bigger than limit");
+        
       }else{
-        console.log("smaller than limit");
         addCards(currentPage + 1);
       }
       
@@ -283,10 +281,8 @@ const handleInfiniteScroll = () => {
     
     if (endOfPage) {
       if(0 >= currentPage){
-        console.log("smaller than zero");
       }else{
-        console.log("bigger than zero " + currentPage);
-        removeCards(currentPage );
+        removeCards(currentPage);
       }
       
     }
